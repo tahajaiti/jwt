@@ -1,0 +1,18 @@
+{
+    "name": "tahajaiti/jwt",
+    "description": "A laravel package for JWT Authentification",
+    "type": "library",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Kyojin\\JWT\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "taha jaiti",
+            "email": "kyojin.rar@gmail.com"
+        }
+    ],
+    "require": {}
+}
