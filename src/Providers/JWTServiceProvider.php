@@ -34,9 +34,7 @@ class JWTServiceProvider extends ServiceProvider {
 
         $this->app->make('router')->aliasMiddleware('jwt', \Kyojin\JWT\Http\Middleware\JwtAuthMiddleware::class);
         
-        Application::configure()->withMiddleware([
-            'jwt' => \Kyojin\JWT\Http\Middleware\JwtAuthMiddleware::class,
-        ]);
+        
     }
 
 }
