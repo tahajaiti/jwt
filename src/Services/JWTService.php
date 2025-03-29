@@ -10,6 +10,7 @@ class JWTService {
     private string $secret;
     private string $algo;
     private int $defTtl;
+    private string $token;
 
     public function __construct(){
         $this->secret = Config::get('jwt.secret', env('JWT_SECRET', 'secret'));
@@ -54,7 +55,18 @@ class JWTService {
             return null;
         }
 
+        $this->token = $token;
+
         return $payload;
+    }
+
+    public function user(){
+        $payload = $this->decode($this->token);
+        if ($payload === null) {
+            return null;
+        }
+
+        return $payload['sub'] ?? null;
     }
 
     public function validate(string $token): bool
