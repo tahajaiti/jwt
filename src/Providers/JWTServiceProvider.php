@@ -11,10 +11,18 @@ class JWTServiceProvider extends ServiceProvider {
         $this->app->singleton('JWT', function ($app) {
             return new JWTService();
         });
+
+        $this->mergeConfigFrom(__DIR__ . '/../../config/jwt.php', 'jwt');
     }
 
     public function boot(){
-        
+
+        if ($this->app->runningInConsole()) {
+            $this->publishes([
+                __DIR__ . '/../../config/jwt.php' => $this->app->basePath('config/jwt.php'),
+            ], 'jwt-config');
+        }
+
     }
 
 }
