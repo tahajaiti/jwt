@@ -3,6 +3,7 @@
 namespace Kyojin\JWT\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use Kyojin\JWT\Console\Commands\Setup;
 use Kyojin\JWT\Services\JWTService;
 
 class JWTServiceProvider extends ServiceProvider {
@@ -22,6 +23,10 @@ class JWTServiceProvider extends ServiceProvider {
                 __DIR__ . '/../../config/jwt.php' => $this->app->basePath('config/jwt.php'),
             ], 'jwt-config');
         }
+
+        $this->commands([
+            Setup::class,
+        ]);
 
     }
 
