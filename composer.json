@@ -14,5 +14,7 @@
             "email": "kyojin.rar@gmail.com"
         }
     ],
-    "require": {}
+    "require-dev": {
+        "illuminate/support": "^12.4"
+    }
 }
