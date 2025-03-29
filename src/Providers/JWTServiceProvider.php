@@ -4,7 +4,7 @@ namespace Kyojin\JWT\Providers;
 
 use Illuminate\Foundation\Application;
 use Illuminate\Support\ServiceProvider;
-use Kyojin\JWT\Console\Commands\Setup;
+use Kyojin\JWT\Commands\Setup;
 use Kyojin\JWT\Services\JWTService;
 
 class JWTServiceProvider extends ServiceProvider {

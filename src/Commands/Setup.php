@@ -1,6 +1,6 @@
 <?php
 
-namespace Kyojin\JWT\Console\Commands;
+namespace Kyojin\JWT\Commands;
 
 use Illuminate\Console\Command;
 
