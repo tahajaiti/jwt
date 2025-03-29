@@ -18,6 +18,17 @@
         "illuminate/support": "^12.4",
         "illuminate/console": "^12.4",
         "illuminate/contracts": "^12.4",
-        "illuminate/http": "^12.4"
+        "illuminate/http": "^12.4",
+        "laravel/framework": "^12.0"
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Kyojin\\JWT\\Providers\\JWTServiceProvider"
+            ],
+            "aliases": {
+                "JWT": "Kyojin\\JWT\\Facades\\JWT"
+            }
+        }
     }
 }

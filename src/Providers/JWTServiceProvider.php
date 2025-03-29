@@ -2,6 +2,7 @@
 
 namespace Kyojin\JWT\Providers;
 
+use Illuminate\Foundation\Application;
 use Illuminate\Support\ServiceProvider;
 use Kyojin\JWT\Console\Commands\Setup;
 use Kyojin\JWT\Services\JWTService;
@@ -9,11 +10,14 @@ use Kyojin\JWT\Services\JWTService;
 class JWTServiceProvider extends ServiceProvider {
     
     public function register(){
+        // ServiceProvider::addProviderToBootstrapFile(JWTServiceProvider::class);
         $this->app->singleton('JWT', function ($app) {
             return new JWTService();
         });
 
         $this->mergeConfigFrom(__DIR__ . '/../../config/jwt.php', 'jwt');
+
+        
     }
 
     public function boot(){
@@ -28,6 +32,11 @@ class JWTServiceProvider extends ServiceProvider {
             Setup::class,
         ]);
 
+        $this->app->make('router')->aliasMiddleware('jwt', \Kyojin\JWT\Http\Middleware\JwtAuthMiddleware::class);
+        
+        Application::configure()->withMiddleware([
+            'jwt' => \Kyojin\JWT\Http\Middleware\JwtAuthMiddleware::class,
+        ]);
     }
 
 }
