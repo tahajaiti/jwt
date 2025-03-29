@@ -3,6 +3,7 @@
 
 namespace Kyojin\JWT\Services;
 
+use Illuminate\Support\Facades\Config;
 
 class JWTService {
 
@@ -11,9 +12,9 @@ class JWTService {
     private int $defTtl;
 
     public function __construct(){
-        $this->secret = env('JWT_SECRET', 'test');
-        $this->algo = env('JWT_ALGO', 'HS256');
-        $this->defTtl = env('JWT_TTL', 3600);
+        $this->secret = Config::get('jwt.secret', env('JWT_SECRET', 'secret'));
+        $this->algo = Config::get('jwt.algo', env('JWT_ALGO', 'HS256'),);
+        $this->defTtl = Config::get('jwt.ttl', env('JWT_TTL', 3600));
     }
 
     public function encode(array $payload){
