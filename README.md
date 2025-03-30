@@ -60,7 +60,7 @@ return [
 
 ### Service Provider
 
-The package automatically registers its service provider. If you need to customize it, add to config/app.php:
+The package automatically registers its service provider. If you need to customize it, add to bootstrap/providers.php:
 
 ``` php
 'providers' => [
