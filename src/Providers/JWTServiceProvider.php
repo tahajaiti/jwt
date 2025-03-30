@@ -2,6 +2,7 @@
 
 namespace Kyojin\JWT\Providers;
 
+use Illuminate\Foundation\Configuration\Middleware;
 use Illuminate\Support\ServiceProvider;
 use Kyojin\JWT\Commands\Setup;
 use Kyojin\JWT\Facades\JWT;
@@ -23,7 +24,12 @@ class JWTServiceProvider extends ServiceProvider
             return new JWTService();
         });
         
+        //register the middlewares
+        app("Illuminate\Contracts\Http\Kernel")->setMiddlewareAliases(
+            $this->getMiddleware()
+        );
     }
+    
 
     /**
      * Bootstrap services.
@@ -32,7 +38,7 @@ class JWTServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        $this->addMiddlewareAlias('jwt', JwtAuthMiddleware::class);
+        // $this->addMiddlewareAlias('jwt', JwtAuthMiddleware::class);
         $this->registerPublishing();
         $this->registerCommands();
     }
@@ -90,5 +96,27 @@ class JWTServiceProvider extends ServiceProvider
                 Setup::class,
             ]);
         }
+    }
+
+    /**
+     * Returns Laravel's default middlewares with package jwt middleware
+     *
+     * @return array
+     */
+    private function getMiddleware(){
+        return [
+            'auth' => 'Illuminate\\Auth\\Middleware\\Authenticate',
+            'auth.basic' => 'Illuminate\\Auth\\Middleware\\AuthenticateWithBasicAuth',
+            'auth.session' => 'Illuminate\\Session\\Middleware\\AuthenticateSession',
+            'cache.headers' => 'Illuminate\\Http\\Middleware\\SetCacheHeaders',
+            'can' => 'Illuminate\\Auth\\Middleware\\Authorize',
+            'guest' => 'Illuminate\\Auth\\Middleware\\RedirectIfAuthenticated',
+            'password.confirm' => 'Illuminate\\Auth\\Middleware\\RequirePassword',
+            'precognitive' => 'Illuminate\\Foundation\\Http\\Middleware\\HandlePrecognitiveRequests',
+            'signed' => 'Illuminate\\Routing\\Middleware\\ValidateSignature',
+            'throttle' => 'Illuminate\\Routing\\Middleware\\ThrottleRequests',
+            'verified' => 'Illuminate\\Auth\\Middleware\\EnsureEmailIsVerified',
+            'jwt' => 'Kyojin\\JWT\\Http\\Middleware\\JwtAuthMiddleware'
+        ];
     }
 }
