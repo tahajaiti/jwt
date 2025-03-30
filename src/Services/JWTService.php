@@ -4,6 +4,7 @@
 namespace Kyojin\JWT\Services;
 
 use Illuminate\Support\Facades\Config;
+use Kyojin\JWT\Exceptions\InvalidTokenException;
 
 class JWTService {
 
@@ -35,7 +36,7 @@ class JWTService {
     public function decode(string $token){
         $parts = explode('.', $token);
         if (count($parts) !== 3) {
-            return null;
+            throw new InvalidTokenException('Invalid token format');
         }
 
         [$headerBase, $payloadBase, $sign] = $parts;
@@ -44,15 +45,15 @@ class JWTService {
         $payload = json_decode(self::base64Decode($payloadBase), true);
 
         if (!$header || !$payload || empty($header) || empty($payload)) {
-            return null;
+            throw new InvalidTokenException('Invalid token payload');
         }
 
         if (!self::verify("$headerBase.$payloadBase", $sign)){
-            return null;
+            throw new InvalidTokenException('Invalid token signature');
         }
 
         if (time() > $payload['exp']) {
-            return null;
+            throw new InvalidTokenException('Token expired');
         }
 
         $this->token = $token;

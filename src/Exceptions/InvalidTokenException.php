@@ -13,7 +13,7 @@ class InvalidTokenException extends Exception {
     {
         return response()->json([
             'error' => 'Invalid token',
-            'message' => 'The token provided is invalid or expired.'
+            'message' => $this->getMessage() ??  'The token provided is invalid or expired.'
         ], 401);
     }
 

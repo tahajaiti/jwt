@@ -13,7 +13,7 @@ class TokenNotFoundException extends Exception {
     {
         return response()->json([
             'error' => 'Token not found',
-            'message' => 'The token was not found in the request.'
+            'message' => $this->getMessage() ?? 'The token was not found in the request.'
         ], 401);
     }
 
