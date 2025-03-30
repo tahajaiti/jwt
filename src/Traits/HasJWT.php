@@ -19,7 +19,6 @@ trait HasJWT
      * to the JWT payload. By default, it includes the subject's identifier.
      *
      * @return array The payload data to be encoded in the JWT
-     * @throws \LogicException If the implementing class doesn't have an 'id' property
      */
     public function payload(): array
     {

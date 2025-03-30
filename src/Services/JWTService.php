@@ -67,6 +67,8 @@ class JWTService
      */
     public function decode(string $token): array
     {
+        $this->token = $token;
+        
         $parts = explode('.', $token);
         if (count($parts) !== 3) {
             throw new InvalidTokenException('Invalid token format');
@@ -89,7 +91,6 @@ class JWTService
             throw new InvalidTokenException('Token expired');
         }
 
-        $this->token = $token;
 
         return $payload;
     }
@@ -97,10 +98,15 @@ class JWTService
     /**
      * Extracts the user object (subject) from the current token.
      *
-     * @return mixed The user model
+     * @return User The user model
      */
     public function user()
     {
+        
+        if (empty($this->token)){
+            throw new InvalidTokenException('No token provided');
+        }
+
         $payload = $this->decode($this->token);
 
         $user = User::where('id', $payload['sub'])->first();
@@ -151,14 +157,15 @@ class JWTService
     }
 
     /**
-     * Creates a signature for the given data using the secret key.
+     * Creates a signature for the given data using the secret key and algorithm.
      *
      * @param string $data The data to sign
      * @return string The generated signature
      */
     private function sign(string $data): string
     {
-        return self::base64Encode(hash_hmac('sha256', $data, $this->secret, true));
+        $algo = str_replace('HS', 'sha', $this->algo);
+        return self::base64Encode(hash_hmac($algo, $data, $this->secret, true));
     }
 
     /**
