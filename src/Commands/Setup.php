@@ -3,6 +3,7 @@
 namespace Kyojin\JWT\Commands;
 
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Artisan;
 
 class Setup extends Command
 {
@@ -26,7 +27,10 @@ class Setup extends Command
 
         $this->publishConfig();
 
-        $this->info('JWT environment variables and configuration have been set up successfully.');
+        Artisan::call('config:clear');
+        Artisan::call('cache:clear');
+
+        $this->info('JWT environment variables and configuration have been set up successfully.');        
     }
 
     private function updateEnv($path, $secret){
