@@ -5,16 +5,40 @@ namespace Kyojin\JWT\Commands;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Artisan;
 
+/**
+ * Class Setup
+ * 
+ * A console command to set up JWT (JSON Web Token) configuration for the application.
+ * This command handles the creation or update of environment variables and publishes
+ * the JWT configuration file.
+ */
 class Setup extends Command
 {
-    protected $signature = 'jwt:setup {--force}';
-    protected $description = 'Setup JWT configuration file, and env variables';
+    /**
+     * The name and signature of the console command.
+     *
+     * @var string
+     */
+    protected $signature = 'jwt:setup {--force : Force overwrite of existing configuration file}';
 
-    public function handle(){
-        
+    /**
+     * The console command description.
+     *
+     * @var string
+     */
+    protected $description = 'Setup JWT configuration file and environment variables';
+
+    /**
+     * Execute the console command.
+     *
+     * Generates a JWT secret, sets up environment variables, and publishes configuration.
+     *
+     * @return void
+     */
+    public function handle(): void
+    {
         $envPath = $this->laravel->basePath('.env');
         $envExists = file_exists($envPath);
-
         $secret = bin2hex(random_bytes(32));
         
         if ($envExists) {
@@ -30,10 +54,18 @@ class Setup extends Command
         Artisan::call('config:clear');
         Artisan::call('cache:clear');
 
-        $this->info('JWT environment variables and configuration have been set up successfully.');        
+        $this->info('JWT environment variables and configuration have been set up successfully.');
     }
 
-    private function updateEnv($path, $secret){
+    /**
+     * Updates an existing .env file with JWT configuration variables.
+     *
+     * @param string $path The path to the .env file
+     * @param string $secret The generated JWT secret key
+     * @return void
+     */
+    private function updateEnv($path, $secret): void
+    {
         $content = file_get_contents($path);
         
         if (strpos($content, 'JWT_SECRET=') !== false) {
@@ -42,11 +74,9 @@ class Setup extends Command
                 'JWT_SECRET=' . $secret,
                 $content
             );
-            
             $this->info('Existing JWT_SECRET updated.');
         } else {
             $content .= PHP_EOL . 'JWT_SECRET=' . $secret . PHP_EOL;
-            
             $this->info('JWT_SECRET added to .env file.');
         }
         
@@ -62,7 +92,15 @@ class Setup extends Command
         $this->info('.env file updated.');
     }
 
-    private function createEnv($path, $secret){
+    /**
+     * Creates a new .env file with basic configuration and JWT variables.
+     *
+     * @param string $path The path where the .env file should be created
+     * @param string $secret The generated JWT secret key
+     * @return void
+     */
+    private function createEnv($path, $secret): void
+    {
         $envContents = <<<EOT
 APP_NAME=Laravel
 APP_ENV=local
@@ -81,7 +119,12 @@ EOT;
         $this->warn('Please check your .env file for any other required settings.');
     }
 
-    private function publishConfig()
+    /**
+     * Publishes the JWT configuration file to the application's config directory.
+     *
+     * @return void
+     */
+    private function publishConfig(): void
     {
         $force = $this->option('force');
         

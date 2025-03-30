@@ -106,7 +106,7 @@ class JWTService
         $user = User::where('id', $payload['sub'])->first();
 
         if (!$user) {
-            throw new InvalidTokenException('User not found');
+            throw new InvalidTokenException('No user associated with token');
         }
 
         return $user;

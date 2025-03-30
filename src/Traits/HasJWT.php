@@ -23,10 +23,6 @@ trait HasJWT
      */
     public function payload(): array
     {
-        if (!property_exists($this, 'id')) {
-            throw new \LogicException('Class using HasJWT trait must have an "id" property');
-        }
-
         return [
             'sub' => $this->id, // Subject (typically the user ID)
         ];
@@ -45,19 +41,5 @@ trait HasJWT
         } catch (\Exception $e) {
             throw new \LogicException('Failed to create JWT token: ' . $e->getMessage());
         }
-    }
-
-    /**
-     * Retrieves the current valid token or creates a new one if none exists.
-     *
-     * @return string The current or newly created JWT token
-     */
-    public function getToken(): string
-    {
-        if (property_exists($this, 'token') && !empty($this->token) && JWT::validate($this->token)) {
-            return $this->token;
-        }
-
-        return $this->createToken();
     }
 }
