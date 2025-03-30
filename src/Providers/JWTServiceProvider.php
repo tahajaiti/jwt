@@ -2,47 +2,80 @@
 
 namespace Kyojin\JWT\Providers;
 
-use Illuminate\Foundation\Application;
 use Illuminate\Support\ServiceProvider;
 use Kyojin\JWT\Commands\Setup;
 use Kyojin\JWT\Facades\JWT;
 use Kyojin\JWT\Http\Middleware\JwtAuthMiddleware;
 use Kyojin\JWT\Services\JWTService;
 
-class JWTServiceProvider extends ServiceProvider {
-    
-    public function register(){
-        // ServiceProvider::addProviderToBootstrapFile(JWTServiceProvider::class);
-        $this->app->singleton('JWT', function ($app) {
+class JWTServiceProvider extends ServiceProvider
+{
+    /**
+     * Register services.
+     *
+     * @return void
+     */
+    public function register()
+    {
+        $this->mergeConfigFrom(__DIR__ . '/../../config/jwt.php', 'jwt');
+        
+        $this->app->singleton('jwt', function ($app) {
             return new JWTService();
         });
-
-        $this->mergeConfigFrom(__DIR__ . '/../../config/jwt.php', 'jwt');
-
         
+        $this->app->alias('jwt', JWT::class);
     }
 
-    public function boot(){
-        
-        $this->aliasMiddleware();
-
-        if ($this->app->runningInConsole()) {
-            $this->publishes([
-                __DIR__ . '/../../config/jwt.php' => $this->app->basePath('config/jwt.php'),
-            ], 'jwt-config');
-        }
-
-        $this->commands([
-            Setup::class,
-        ]);
-        
+    /**
+     * Bootstrap services.
+     *
+     * @return void
+     */
+    public function boot()
+    {
+        $this->registerMiddleware();
+        $this->registerPublishing();
+        $this->registerCommands();
     }
     
-    protected function aliasMiddleware(){
+    /**
+     * Register middleware.
+     *
+     * @return void
+     */
+    protected function registerMiddleware()
+    {
         $router = $this->app['router'];
-
+        
         $method = method_exists($router, 'aliasMiddleware') ? 'aliasMiddleware' : 'middleware';
-
-        $router->$method('jwt.auth', JwtAuthMiddleware::class);
+        $router->$method('jwt', JwtAuthMiddleware::class);
+    }
+    
+    /**
+     * Register publishable assets.
+     *
+     * @return void
+     */
+    protected function registerPublishing()
+    {
+        if ($this->app->runningInConsole()) {
+            $this->publishes([
+                __DIR__ . '/../../config/jwt.php' => config_path('jwt.php'),
+            ], 'jwt-config');
+        }
+    }
+    
+    /**
+     * Register console commands.
+     *
+     * @return void
+     */
+    protected function registerCommands()
+    {
+        if ($this->app->runningInConsole()) {
+            $this->commands([
+                Setup::class,
+            ]);
+        }
     }
 }
