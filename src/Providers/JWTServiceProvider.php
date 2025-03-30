@@ -24,7 +24,7 @@ class JWTServiceProvider extends ServiceProvider
             return new JWTService();
         });
         
-        //register the middlewares
+        //register the middlewares aliases
         app("Illuminate\Contracts\Http\Kernel")->setMiddlewareAliases(
             $this->getMiddleware()
         );
@@ -38,7 +38,7 @@ class JWTServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        // $this->addMiddlewareAlias('jwt', JwtAuthMiddleware::class);
+        $this->addMiddlewareAlias('jwt', JwtAuthMiddleware::class);
         $this->registerPublishing();
         $this->registerCommands();
     }
