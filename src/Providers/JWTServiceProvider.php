@@ -33,7 +33,7 @@ class JWTServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        $this->registerMiddleware();
+        $this->addMiddlewareAlias('jwt.auth', JwtAuthMiddleware::class);
         $this->registerPublishing();
         $this->registerCommands();
     }
@@ -43,14 +43,28 @@ class JWTServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    protected function registerMiddleware()
+    
+    /**
+     * Register a short-hand name for a middleware. For compatibility
+     * with Laravel < 5.4 check if aliasMiddleware exists since this
+     * method has been renamed.
+     *
+     * @param string $name
+     * @param string $class
+     *
+     * @return void
+     */
+    protected function addMiddlewareAlias($name, $class)
     {
         $router = $this->app['router'];
-        
-        $method = method_exists($router, 'aliasMiddleware') ? 'aliasMiddleware' : 'middleware';
-        $router->$method('jwt', JwtAuthMiddleware::class);
+
+        if (method_exists($router, 'aliasMiddleware')) {
+            return $router->aliasMiddleware($name, $class);
+        }
+
+        return $router->middleware($name, $class);
     }
-    
+
     /**
      * Register publishable assets.
      *
