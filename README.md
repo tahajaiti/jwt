@@ -127,6 +127,8 @@ Requests must include an Authorization header:
 Authorization: Bearer your-jwt-token
 ```
 
+Or optionally you can send the token through Http Cookies as 'jwt_token'
+
 ### Validating Tokens
 
 The default middleware automatically binds the user to the Auth facade

@@ -28,7 +28,7 @@ class JwtAuthMiddleware
      */
     public function handle(Request $request, Closure $next): mixed
     {
-        $token = $request->bearerToken();
+        $token = $request->cookie('jwt_token') ?? $request->bearerToken();
 
         if (empty($token)) {
             throw new TokenNotFoundException('Authentication token not found in request', 401);
