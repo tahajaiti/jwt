@@ -22,7 +22,7 @@ A Laravel package for implementing JSON Web Token (JWT) authentication with a ro
 Install the package via Composer:
 
 ``` bash
-composer require kyojin/jwt
+composer require tahajaiti/jwt
 ```
 
 Run the setup command to configure the package:
