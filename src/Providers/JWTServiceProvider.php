@@ -19,11 +19,10 @@ class JWTServiceProvider extends ServiceProvider
     {
         $this->mergeConfigFrom(__DIR__ . '/../../config/jwt.php', 'jwt');
         
-        $this->app->singleton('jwt', function ($app) {
+        $this->app->singleton('JWT', function ($app) {
             return new JWTService();
         });
         
-        $this->app->alias('jwt', JWT::class);
     }
 
     /**
@@ -33,7 +32,7 @@ class JWTServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        $this->addMiddlewareAlias('jwt.auth', JwtAuthMiddleware::class);
+        $this->addMiddlewareAlias('jwt', JwtAuthMiddleware::class);
         $this->registerPublishing();
         $this->registerCommands();
     }
