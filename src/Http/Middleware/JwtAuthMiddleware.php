@@ -26,7 +26,7 @@ class JwtAuthMiddleware
      * @throws TokenNotFoundException If no token is present in the request
      * @throws InvalidTokenException If the token is invalid or authentication fails
      */
-    public function handle(Request $request, Closure $next)
+    public function handle(Request $request, Closure $next): mixed
     {
         $token = $request->bearerToken();
 
@@ -52,7 +52,6 @@ class JwtAuthMiddleware
      *
      * @param string $token The JWT token to validate
      * @return void
-     * @throws InvalidTokenException If token validation fails
      */
     protected function authenticate(string $token): void
     {

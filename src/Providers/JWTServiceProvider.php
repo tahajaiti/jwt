@@ -2,10 +2,8 @@
 
 namespace Kyojin\JWT\Providers;
 
-use Illuminate\Foundation\Configuration\Middleware;
 use Illuminate\Support\ServiceProvider;
 use Kyojin\JWT\Commands\Setup;
-use Kyojin\JWT\Facades\JWT;
 use Kyojin\JWT\Http\Middleware\JwtAuthMiddleware;
 use Kyojin\JWT\Services\JWTService;
 
@@ -16,7 +14,7 @@ class JWTServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    public function register()
+    public function register(): void
     {
         $this->mergeConfigFrom(__DIR__ . '/../../config/jwt.php', 'jwt');
         
@@ -36,7 +34,7 @@ class JWTServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    public function boot()
+    public function boot(): void
     {
         $this->addMiddlewareAlias('jwt', JwtAuthMiddleware::class);
         $this->registerPublishing();
@@ -50,7 +48,7 @@ class JWTServiceProvider extends ServiceProvider
      */
     
     /**
-     * Register a short-hand name for a middleware. For compatibility
+     * Register a shorthand name for a middleware. For compatibility
      * with Laravel < 5.4 check if aliasMiddleware exists since this
      * method has been renamed.
      *
@@ -59,15 +57,13 @@ class JWTServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    protected function addMiddlewareAlias($name, $class)
+    protected function addMiddlewareAlias(string $name, string $class): void
     {
         $router = $this->app['router'];
 
         if (method_exists($router, 'aliasMiddleware')) {
-            return $router->aliasMiddleware($name, $class);
+            $router->aliasMiddleware($name, $class);
         }
-
-        return $router->middleware($name, $class);
     }
 
     /**
@@ -75,7 +71,7 @@ class JWTServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    protected function registerPublishing()
+    protected function registerPublishing(): void
     {
         if ($this->app->runningInConsole()) {
             $this->publishes([
@@ -89,7 +85,7 @@ class JWTServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    protected function registerCommands()
+    protected function registerCommands(): void
     {
         if ($this->app->runningInConsole()) {
             $this->commands([
@@ -99,11 +95,12 @@ class JWTServiceProvider extends ServiceProvider
     }
 
     /**
-     * Returns Laravel's default middlewares with package jwt middleware
+     * Returns Laravel default middlewares with package jwt middleware
      *
      * @return array
      */
-    private function getMiddleware(){
+    private function getMiddleware(): array
+    {
         return [
             'auth' => 'Illuminate\\Auth\\Middleware\\Authenticate',
             'auth.basic' => 'Illuminate\\Auth\\Middleware\\AuthenticateWithBasicAuth',

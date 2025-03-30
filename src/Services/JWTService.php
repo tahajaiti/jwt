@@ -79,7 +79,7 @@ class JWTService
         $header = json_decode(self::base64Decode($headerBase), true);
         $payload = json_decode(self::base64Decode($payloadBase), true);
 
-        if (!$header || !$payload || empty($header) || empty($payload)) {
+        if (empty($header) || empty($payload)) {
             throw new InvalidTokenException('Invalid token payload');
         }
 
@@ -99,8 +99,9 @@ class JWTService
      * Extracts the user object (subject) from the current token.
      *
      * @return User The user model
+     * @throws InvalidTokenException
      */
-    public function user()
+    public function user(): User
     {
         
         if (empty($this->token)){

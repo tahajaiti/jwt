@@ -1,6 +1,6 @@
 {
     "name": "tahajaiti/jwt",
-    "description": "A laravel package for JWT Authentification",
+    "description": "A laravel package for JWT Authentication",
     "type": "library",
     "license": "MIT",
     "autoload": {

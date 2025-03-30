@@ -4,6 +4,7 @@ namespace Kyojin\JWT\Commands;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Artisan;
+use Random\RandomException;
 
 /**
  * Class Setup
@@ -34,6 +35,7 @@ class Setup extends Command
      * Generates a JWT secret, sets up environment variables, and publishes configuration.
      *
      * @return void
+     * @throws RandomException
      */
     public function handle(): void
     {
@@ -64,11 +66,11 @@ class Setup extends Command
      * @param string $secret The generated JWT secret key
      * @return void
      */
-    private function updateEnv($path, $secret): void
+    private function updateEnv(string $path, string $secret): void
     {
         $content = file_get_contents($path);
         
-        if (strpos($content, 'JWT_SECRET=') !== false) {
+        if (str_contains($content, 'JWT_SECRET=')) {
             $content = preg_replace(
                 '/JWT_SECRET=.*/',
                 'JWT_SECRET=' . $secret,
@@ -80,11 +82,11 @@ class Setup extends Command
             $this->info('JWT_SECRET added to .env file.');
         }
         
-        if (strpos($content, 'JWT_ALGO=') === false) {
+        if (!str_contains($content, 'JWT_ALGO=')) {
             $content .= 'JWT_ALGO=HS256' . PHP_EOL;
         }
         
-        if (strpos($content, 'JWT_TTL=') === false) {
+        if (!str_contains($content, 'JWT_TTL=')) {
             $content .= 'JWT_TTL=3600' . PHP_EOL;
         }
         
@@ -99,7 +101,7 @@ class Setup extends Command
      * @param string $secret The generated JWT secret key
      * @return void
      */
-    private function createEnv($path, $secret): void
+    private function createEnv(string $path, string $secret): void
     {
         $envContents = <<<EOT
 APP_NAME=Laravel

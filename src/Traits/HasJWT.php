@@ -3,6 +3,7 @@
 namespace Kyojin\JWT\Traits;
 
 use Kyojin\JWT\Facades\JWT;
+use LogicException;
 
 /**
  * Trait HasJWT
@@ -31,14 +32,14 @@ trait HasJWT
      * Creates a new JWT token for the current instance.
      *
      * @return string The encoded JWT token
-     * @throws \LogicException If token creation fails due to invalid payload
+     * @throws LogicException If token creation fails due to invalid payload
      */
     public function createToken(): string
     {
         try {
             return JWT::encode($this->payload());
         } catch (\Exception $e) {
-            throw new \LogicException('Failed to create JWT token: ' . $e->getMessage());
+            throw new LogicException('Failed to create JWT token: ' . $e->getMessage());
         }
     }
 }
