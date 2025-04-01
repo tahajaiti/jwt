@@ -101,19 +101,9 @@ class JWTServiceProvider extends ServiceProvider
      */
     private function getMiddleware(): array
     {
-        return [
-            'auth' => 'Illuminate\\Auth\\Middleware\\Authenticate',
-            'auth.basic' => 'Illuminate\\Auth\\Middleware\\AuthenticateWithBasicAuth',
-            'auth.session' => 'Illuminate\\Session\\Middleware\\AuthenticateSession',
-            'cache.headers' => 'Illuminate\\Http\\Middleware\\SetCacheHeaders',
-            'can' => 'Illuminate\\Auth\\Middleware\\Authorize',
-            'guest' => 'Illuminate\\Auth\\Middleware\\RedirectIfAuthenticated',
-            'password.confirm' => 'Illuminate\\Auth\\Middleware\\RequirePassword',
-            'precognitive' => 'Illuminate\\Foundation\\Http\\Middleware\\HandlePrecognitiveRequests',
-            'signed' => 'Illuminate\\Routing\\Middleware\\ValidateSignature',
-            'throttle' => 'Illuminate\\Routing\\Middleware\\ThrottleRequests',
-            'verified' => 'Illuminate\\Auth\\Middleware\\EnsureEmailIsVerified',
-            'jwt' => 'Kyojin\\JWT\\Http\\Middleware\\JwtAuthMiddleware'
-        ];
+        $middlewares = app("Illuminate\Contracts\Http\Kernel")->getMiddlewareAliases();
+        $middlewares['jwt'] = 'Kyojin\\JWT\\Http\\Middleware\\JwtAuthMiddleware';
+
+        return $middlewares;
     }
 }
