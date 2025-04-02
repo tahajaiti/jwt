@@ -2,8 +2,8 @@
 
 namespace Kyojin\JWT\Services;
 
-use Illuminate\Foundation\Auth\User;
 use Illuminate\Support\Facades\Config;
+use Illuminate\Database\Eloquent\Model;
 use Kyojin\JWT\Exceptions\InvalidTokenException;
 
 /**
@@ -49,10 +49,10 @@ class JWTService
         $payload['exp'] = time() + $this->defTtl;
 
         $header = json_encode(['alg' => $this->algo, 'typ' => 'JWT']);
-        
+
         $headerBase = self::base64Encode($header);
         $payloadBase = self::base64Encode(json_encode($payload));
-        
+
         $sign = self::sign("$headerBase.$payloadBase");
 
         return "$headerBase.$payloadBase.$sign";
@@ -68,7 +68,7 @@ class JWTService
     public function decode(string $token): array
     {
         $this->token = $token;
-        
+
         $parts = explode('.', $token);
         if (count($parts) !== 3) {
             throw new InvalidTokenException('Invalid token format');
@@ -98,19 +98,25 @@ class JWTService
     /**
      * Extracts the user object (subject) from the current token.
      *
-     * @return User The user model
+     * @return Model The user model
      * @throws InvalidTokenException
      */
-    public function user(): User
+    public function user(): Model
     {
-        
-        if (empty($this->token)){
+        if (empty($this->token)) {
             throw new InvalidTokenException('No token provided');
         }
 
         $payload = $this->decode($this->token);
 
-        $user = User::where('id', $payload['sub'])->first();
+        $userModel = 'App\\Models\\User';
+
+        if (!is_subclass_of($userModel, Model::class)) {
+            throw new InvalidTokenException('Invalid user model configured.');
+        }
+
+        /** @var Model $user */
+        $user = $userModel::where('id', $payload['sub'])->first();
 
         if (!$user) {
             throw new InvalidTokenException('No user associated with token');
