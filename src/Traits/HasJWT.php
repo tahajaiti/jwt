@@ -24,6 +24,19 @@ trait HasJWT
     public function payload(): array
     {
         return [
+        ];
+    }
+
+
+    /**
+     * Generates the default payload array for JWT encoding.
+     * 
+     * This method is used internally to provide a standard payload structure.
+     *
+     * @return array The default payload data to be encoded in the JWT
+     */
+    private function defaultPayload(): array {
+        return [
             'sub' => $this->id, // Subject (typically the user ID)
         ];
     }
@@ -36,8 +49,11 @@ trait HasJWT
      */
     public function createToken(): string
     {
+        // Merge default payload with custom payload
+        $payload = array_merge($this->defaultPayload(), $this->payload());
+
         try {
-            return JWT::encode($this->payload());
+            return JWT::encode($payload);
         } catch (\Exception $e) {
             throw new LogicException('Failed to create JWT token: ' . $e->getMessage());
         }
