@@ -85,9 +85,9 @@ class User extends Authenticatable
     // Optional: Customize payload
     public function payload(): array
     {
-        $payload = parent::payload();
-        $payload['role'] = $this->role;
-        return $payload;
+        return [
+            'role' => $this->role
+        ];
     }
 }
 ```
